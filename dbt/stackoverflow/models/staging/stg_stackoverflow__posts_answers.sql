@@ -13,6 +13,13 @@ WITH source AS (
     SELECT * FROM {{ source('stackoverflow_raw', 'posts_answers') }}
 ),
 
+deduplicated AS (
+    SELECT
+        *,
+        ROW_NUMBER() OVER (PARTITION BY id ORDER BY last_activity_date DESC) AS rn
+    FROM source
+),
+
 renamed AS (
     SELECT
         id,
@@ -35,7 +42,8 @@ renamed AS (
         score,
         tags,
         view_count
-    FROM source
+    FROM deduplicated
+    WHERE rn = 1
 )
 
 SELECT *

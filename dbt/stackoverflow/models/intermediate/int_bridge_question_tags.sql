@@ -9,8 +9,8 @@ WITH unnested AS (
 
 SELECT
     u.question_id,
-    t.tag_id,
+    t.id AS tag_id,
     t.tag_name
 FROM unnested u
-INNER JOIN {{ ref("dim_tags") }} t
+INNER JOIN {{ ref("stg_stackoverflow__tags") }} t
     ON u.tag_name_raw = t.tag_name

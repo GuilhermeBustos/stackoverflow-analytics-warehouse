@@ -18,6 +18,7 @@ SELECT
     owner_user_id,
     accepted_answer_id,
     title,
+    body,
     score,
     view_count,
     answer_count,
@@ -27,8 +28,5 @@ SELECT
     last_edit_date,
     last_activity_date,
     last_editor_user_id,
-    accepted_answer_id IS NOT NULL AS has_accepted_answer,
-    TIMESTAMP_DIFF(
-        last_activity_date, creation_date, DAY
-    ) AS days_active
+    TIMESTAMP_DIFF(last_activity_date, creation_date, DAY) AS days_active
 FROM source

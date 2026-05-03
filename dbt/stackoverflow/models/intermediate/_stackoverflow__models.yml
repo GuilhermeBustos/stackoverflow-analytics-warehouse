@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: int_answer_acceptance
+    description: ""
+    columns:
+      - name: answer_id
+        data_type: int64
+        description: ""
+        tests:
+          - not_null
+
+      - name: question_id
+        data_type: int64
+        description: ""
+
+      - name: is_accepted
+        data_type: boolean
+        description: ""
+        tests:
+          - not_null
+
+      - name: hours_to_answer
+        data_type: int64
+        description: ""
+
+  - name: int_bridge_question_tags
+    description: ""
+    columns:
+      - name: question_id
+        data_type: int64
+        description: ""
+        tests:
+          - not_null
+
+      - name: tag_id
+        data_type: int64
+        description: ""
+        tests:
+          - not_null
+
+      - name: tag_name
+        data_type: string
+        description: ""
+        tests:
+          - not_null

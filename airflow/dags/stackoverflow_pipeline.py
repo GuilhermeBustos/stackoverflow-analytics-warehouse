@@ -163,9 +163,19 @@ def stackoverflow_pipeline():
         )
 
     with TaskGroup("transform") as transform:
+        dbt_deps = BashOperator(
+            task_id="dbt_deps",
+            bash_command="cd /opt/airflow/dbt/stackoverflow && dbt deps --profiles-dir /opt/airflow/dbt",
+        )
+
         dbt_staging = BashOperator(
             task_id="dbt_run_staging",
             bash_command="cd /opt/airflow/dbt/stackoverflow && dbt run --select staging --profiles-dir /opt/airflow/dbt",
+        )
+
+        dbt_intermediate = BashOperator(
+            task_id="dbt_run_intermediate",
+            bash_command="cd /opt/airflow/dbt/stackoverflow && dbt run --select intermediate --profiles-dir /opt/airflow/dbt",
         )
 
         dbt_mart = BashOperator(
@@ -173,7 +183,7 @@ def stackoverflow_pipeline():
             bash_command="cd /opt/airflow/dbt/stackoverflow && dbt run --select marts --profiles-dir /opt/airflow/dbt",
         )
 
-        dbt_staging >> dbt_mart
+        dbt_deps >> dbt_staging >> dbt_intermediate >> dbt_mart
 
     extract >> load >> transform
 

@@ -1,0 +1,275 @@
+version: 2
+
+models:
+  - name: stg_stackoverflow__posts_questions
+    description: ""
+    columns:
+      - name: id
+        data_type: int64
+        description: ""
+        tests:
+          - not_null
+          - unique
+
+      - name: title
+        data_type: string
+        description: ""
+
+      - name: body
+        data_type: string
+        description: ""
+
+      - name: accepted_answer_id
+        data_type: int64
+        description: ""
+
+      - name: answer_count
+        data_type: int64
+        description: ""
+
+      - name: comment_count
+        data_type: int64
+        description: ""
+
+      - name: community_owned_date
+        data_type: timestamp
+        description: ""
+
+      - name: creation_date
+        data_type: timestamp
+        description: ""
+        tests:
+          - not_null
+
+      - name: favorite_count
+        data_type: int64
+        description: ""
+
+      - name: last_activity_date
+        data_type: timestamp
+        description: ""
+
+      - name: last_edit_date
+        data_type: timestamp
+        description: ""
+
+      - name: last_editor_display_name
+        data_type: string
+        description: ""
+
+      - name: last_editor_user_id
+        data_type: int64
+        description: ""
+
+      - name: owner_display_name
+        data_type: string
+        description: ""
+
+      - name: owner_user_id
+        data_type: int64
+        description: ""
+
+      - name: parent_id
+        data_type: string
+        description: ""
+
+      - name: post_type_id
+        data_type: int64
+        description: ""
+
+      - name: score
+        data_type: int64
+        description: ""
+        tests:
+          - not_null
+
+      - name: tags
+        data_type: string
+        description: ""
+
+      - name: view_count
+        data_type: int64
+        description: ""
+
+  - name: stg_stackoverflow__posts_answers
+    description: ""
+    columns:
+      - name: id
+        data_type: int64
+        description: ""
+        tests:
+          - not_null
+          - unique
+
+      - name: title
+        data_type: string
+        description: ""
+
+      - name: body
+        data_type: string
+        description: ""
+
+      - name: accepted_answer_id
+        data_type: string
+        description: ""
+
+      - name: answer_count
+        data_type: string
+        description: ""
+
+      - name: comment_count
+        data_type: int64
+        description: ""
+
+      - name: community_owned_date
+        data_type: timestamp
+        description: ""
+
+      - name: creation_date
+        data_type: timestamp
+        description: ""
+        tests:
+          - not_null
+
+      - name: favorite_count
+        data_type: string
+        description: ""
+
+      - name: last_activity_date
+        data_type: timestamp
+        description: ""
+
+      - name: last_edit_date
+        data_type: timestamp
+        description: ""
+
+      - name: last_editor_display_name
+        data_type: string
+        description: ""
+
+      - name: last_editor_user_id
+        data_type: int64
+        description: ""
+
+      - name: owner_display_name
+        data_type: string
+        description: ""
+
+      - name: owner_user_id
+        data_type: int64
+        description: ""
+
+      - name: parent_id
+        data_type: int64
+        description: ""
+        tests:
+          - not_null
+
+      - name: post_type_id
+        data_type: int64
+        description: ""
+
+      - name: score
+        data_type: int64
+        description: ""
+        tests:
+          - not_null
+
+      - name: tags
+        data_type: string
+        description: ""
+
+      - name: view_count
+        data_type: string
+        description: ""
+
+  - name: stg_stackoverflow__users
+    description: ""
+    columns:
+      - name: id
+        data_type: int64
+        description: ""
+        tests:
+          - not_null
+          - unique
+
+      - name: display_name
+        data_type: string
+        description: ""
+        tests:
+          - not_null
+
+      - name: about_me
+        data_type: string
+        description: ""
+
+      - name: age
+        data_type: string
+        description: ""
+
+      - name: creation_date
+        data_type: timestamp
+        description: ""
+        tests:
+          - not_null
+
+      - name: last_access_date
+        data_type: timestamp
+        description: ""
+
+      - name: location
+        data_type: string
+        description: ""
+
+      - name: reputation
+        data_type: int64
+        description: ""
+
+      - name: up_votes
+        data_type: int64
+        description: ""
+
+      - name: down_votes
+        data_type: int64
+        description: ""
+
+      - name: views
+        data_type: int64
+        description: ""
+
+      - name: profile_image_url
+        data_type: string
+        description: ""
+
+      - name: website_url
+        data_type: string
+        description: ""
+
+  - name: stg_stackoverflow__tags
+    description: ""
+    columns:
+      - name: id
+        data_type: int64
+        description: ""
+        tests:
+          - not_null
+          - unique
+
+      - name: tag_name
+        data_type: string
+        description: ""
+        tests:
+          - not_null
+          - unique
+
+      - name: count
+        data_type: int64
+        description: ""
+
+      - name: excerpt_post_id
+        data_type: int64
+        description: ""
+
+      - name: wiki_post_id
+        data_type: int64
+        description: ""
