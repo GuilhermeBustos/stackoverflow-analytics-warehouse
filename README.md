@@ -45,14 +45,14 @@ Warehouse-centric batch ELT on GCP. GCS acts as a Parquet staging zone; BigQuery
 ## Tech stack
 
 | Layer           | Tool                                |
-|-----------------|-------------------------------------|
+| --------------- | ----------------------------------- |
 | Cloud           | GCP                                 |
 | Infrastructure  | Terraform                           |
 | Orchestration   | Apache Airflow 3.2 (Docker Compose) |
 | Staging storage | Google Cloud Storage (Parquet)      |
 | Data warehouse  | BigQuery                            |
 | Transformation  | dbt (`dbt-bigquery`, `dbt-utils`)   |
-| Dashboard       | Looker Studio *(in progress)*       |
+| Dashboard       | Looker Studio _(in progress)_       |
 
 ## Dataset
 
@@ -60,7 +60,7 @@ Warehouse-centric batch ELT on GCP. GCS acts as a Parquet staging zone; BigQuery
 
 Tables ingested: `posts_questions`, `posts_answers`, `users`, `tags`.
 
-`posts_questions` and `posts_answers` are exported per year (2008–2022) via `EXPORT DATA` to keep file sizes manageable and enable parallelised Airflow tasks. `users` and `tags` are exported as full snapshots keyed by date.
+`posts_questions` and `posts_answers` are exported per year (2008–2022) via `EXPORT DATA` to keep file sizes manageable and enable parallelized Airflow tasks. `users` and `tags` are exported as full snapshots keyed by date.
 
 ## Repository structure
 
@@ -109,33 +109,33 @@ Tables ingested: `posts_questions`, `posts_answers`, `users`, `tags`.
 
 Dataset routing is handled by `+schema` in `dbt_project.yml` against a base profile dataset of `stackoverflow`:
 
-| Layer        | `+schema` | Target dataset         | Materialization |
-|--------------|-----------|------------------------|-----------------|
-| Staging      | `trusted` | `stackoverflow_trusted`| table           |
-| Intermediate | `trusted` | `stackoverflow_trusted`| view            |
-| Marts        | `marts`   | `stackoverflow_marts`  | table           |
+| Layer        | `+schema` | Target dataset          | Materialization |
+| ------------ | --------- | ----------------------- | --------------- |
+| Staging      | `trusted` | `stackoverflow_trusted` | table           |
+| Intermediate | `trusted` | `stackoverflow_trusted` | view            |
+| Marts        | `marts`   | `stackoverflow_marts`   | table           |
 
 ### Trusted layer — partition & cluster strategy
 
-| Model                                | Partition (monthly) | Cluster                              |
-|--------------------------------------|---------------------|--------------------------------------|
-| `stg_stackoverflow__posts_questions` | `creation_date`     | `owner_user_id`, `id`                |
-| `stg_stackoverflow__posts_answers`   | `creation_date`     | `parent_id`, `owner_user_id`, `id`   |
-| `stg_stackoverflow__users`           | `creation_date`     | `id`                                 |
-| `stg_stackoverflow__tags`            | —                   | —                                    |
+| Model                                | Partition (monthly) | Cluster                            |
+| ------------------------------------ | ------------------- | ---------------------------------- |
+| `stg_stackoverflow__posts_questions` | `creation_date`     | `owner_user_id`, `id`              |
+| `stg_stackoverflow__posts_answers`   | `creation_date`     | `parent_id`, `owner_user_id`, `id` |
+| `stg_stackoverflow__users`           | `creation_date`     | `id`                               |
+| `stg_stackoverflow__tags`            | —                   | —                                  |
 
-Monthly partitioning on `creation_date` minimises scanned bytes for time-filtered queries. Clustering on `owner_user_id`/`id` accelerates user-level joins across questions, answers and users; `parent_id` clustering on answers accelerates the most frequent join in the marts layer.
+Monthly partitioning on `creation_date` minimizes scanned bytes for time-filtered queries. Clustering on `owner_user_id`/`id` accelerates user-level joins across questions, answers and users; `parent_id` clustering on answers accelerates the most frequent join in the marts layer.
 
 ### Marts layer — cluster strategy
 
-| Model                    | Cluster              |
-|--------------------------|----------------------|
-| `dim_date`               | `date_day`           |
-| `dim_tags`               | `tag_id`             |
-| `dim_users`              | `user_id`            |
+| Model                    | Cluster                        |
+| ------------------------ | ------------------------------ |
+| `dim_date`               | `date_day`                     |
+| `dim_tags`               | `tag_id`                       |
+| `dim_users`              | `user_id`                      |
 | `fact_questions`         | `owner_user_id`, `question_id` |
 | `fact_answers`           | `owner_user_id`, `question_id` |
-| `mart_technology_trends` | `tag_name`, `year`   |
+| `mart_technology_trends` | `tag_name`, `year`             |
 
 ## Prerequisites
 
@@ -190,7 +190,7 @@ Airflow UI is at `http://localhost:8080`. Sign in with the credentials set in `_
 
 ### 5. Run the pipeline
 
-Unpause the `stackoverflow` DAG in the Airflow UI and trigger it manually. Four task groups run in sequence:
+Unpause the `stackoverflow` DAG in the Airflow UI and trigger it manually. Three task groups run in sequence:
 
 1. **`extract_to_gcs`** — exports each source table to GCS as Parquet. `posts_questions` and `posts_answers` are mapped per year (2008–2022); `users` and `tags` are full snapshots.
 2. **`load_to_bigquery`** — loads all Parquet files into `stackoverflow_raw` (`WRITE_TRUNCATE`).
@@ -202,20 +202,16 @@ Unpause the `stackoverflow` DAG in the Airflow UI and trigger it manually. Four 
 
 ## Environment variables
 
-| Variable                         | Description                                                                 |
-|----------------------------------|-----------------------------------------------------------------------------|
-| `GCP_PROJECT_ID`                 | GCP project ID                                                              |
-| `GCP_REGION`                     | GCP region (e.g. `us-central1`) — must match BigQuery dataset location      |
-| `GCS_RAW_BUCKET`                 | Parquet staging bucket name                                                 |
-| `BQ_RAW_DATASET`                 | Raw dataset name (default: `stackoverflow_raw`)                             |
-| `BQ_TRUSTED_DATASET`             | Trusted dataset name (default: `stackoverflow_trusted`)                     |
-| `BQ_MARTS_DATASET`               | Marts dataset name (default: `stackoverflow_marts`)                         |
-| `GOOGLE_APPLICATION_CREDENTIALS` | Path inside the container to the service-account JSON                       |
-| `AIRFLOW_UID`                    | Host user ID (`id -u`) — prevents root-owned files in mounted volumes       |
-| `CREDENTIALS_PATH`               | Host path to the `credentials/` directory                                   |
+| Variable                         | Description                                                                                                                        |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `GCP_PROJECT_ID`                 | GCP project ID                                                                                                                     |
+| `GCP_REGION`                     | GCP region (e.g. `us-central1`) — must match BigQuery dataset location                                                             |
+| `GCS_RAW_BUCKET`                 | Parquet staging bucket name                                                                                                        |
+| `BQ_RAW_DATASET`                 | Raw dataset name (default: `stackoverflow_raw`)                                                                                    |
+| `BQ_TRUSTED_DATASET`             | Trusted dataset name (default: `stackoverflow_trusted`)                                                                            |
+| `BQ_MARTS_DATASET`               | Marts dataset name (default: `stackoverflow_marts`)                                                                                |
+| `GOOGLE_APPLICATION_CREDENTIALS` | Path inside the container to the service-account JSON                                                                              |
+| `AIRFLOW_UID`                    | Host user ID (`id -u`) — prevents root-owned files in mounted volumes                                                              |
+| `CREDENTIALS_PATH`               | Host path to the `credentials/` directory                                                                                          |
 | `FERNET_KEY`                     | Airflow encryption key — generate with `python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"` |
-| `_AIRFLOW_WWW_USER_USERNAME`     | Airflow UI admin username                                                   |
-
-## Dashboard
-
-> Looker Studio dashboard in progress. Link and screenshots will be added on completion.
+| `_AIRFLOW_WWW_USER_USERNAME`     | Airflow UI admin username                                                                                                          |

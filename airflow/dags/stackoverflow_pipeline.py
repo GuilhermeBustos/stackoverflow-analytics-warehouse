@@ -75,6 +75,8 @@ def stackoverflow_pipeline():
             ],
             export_format="PARQUET",
             gcp_conn_id=GCP_CONN_ID,
+            project_id=BQ_PROJECT,
+            location="US",
         )
 
         BigQueryToGCSOperator(
@@ -85,6 +87,8 @@ def stackoverflow_pipeline():
             ],
             export_format="PARQUET",
             gcp_conn_id=GCP_CONN_ID,
+            project_id=BQ_PROJECT,
+            location="US",
         )
 
     with TaskGroup("load_to_bigquery") as load:
